@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'handle.ui'
+# Form implementation generated from reading ui file '/home/pi/py/raspberry-pi-RC/handle.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -11,52 +11,58 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(400, 300)
-        self.verticalSlider = QtWidgets.QSlider(Form)
-        self.verticalSlider.setGeometry(QtCore.QRect(60, 70, 26, 160))
-        self.verticalSlider.setOrientation(QtCore.Qt.Vertical)
-        self.verticalSlider.setObjectName("verticalSlider")
-        self.verticalSlider.setMinimum(-100)
-        self.verticalSlider.setMaximum(100)
-        self.dial = QtWidgets.QDial(Form)
-        self.dial.setGeometry(QtCore.QRect(280, 90, 111, 131))
-        self.dial.setObjectName("dial")
-        self.pushButton = QtWidgets.QPushButton(Form)
-        self.pushButton.setGeometry(QtCore.QRect(150, 20, 99, 30))
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton_2 = QtWidgets.QPushButton(Form)
-        self.pushButton_2.setGeometry(QtCore.QRect(150, 240, 99, 30))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_3 = QtWidgets.QPushButton(Form)
-        self.pushButton_3.setGeometry(QtCore.QRect(10, 20, 99, 30))
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.lcdNumber = QtWidgets.QLCDNumber(Form)
-        self.lcdNumber.setGeometry(QtCore.QRect(150, 70, 101, 41))
-        self.lcdNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
-        self.lcdNumber.setProperty("intValue", 0)
-        self.lcdNumber.setObjectName("lcdNumber")
-        self.pushButton_4 = QtWidgets.QPushButton(Form)
-        self.pushButton_4.setGeometry(QtCore.QRect(290, 20, 99, 30))
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.dial_2 = QtWidgets.QDial(Form)
-        self.dial_2.setGeometry(QtCore.QRect(150, 120, 91, 101))
-        self.dial_2.setObjectName("dial_2")
+        Form.resize(522, 330)
+        self.Headlamp_Button = QtWidgets.QPushButton(Form)
+        self.Headlamp_Button.setGeometry(QtCore.QRect(0, 0, 521, 61))
+        self.Headlamp_Button.setObjectName("Headlamp_Button")
+
+        self.Taillamp_Button = QtWidgets.QPushButton(Form)
+        self.Taillamp_Button.setGeometry(QtCore.QRect(-10, 270, 531, 61))
+        self.Taillamp_Button.setObjectName("Taillamp_Button")
+        
+        self.SpeedSlider = QtWidgets.QSlider(Form)
+        self.SpeedSlider.setGeometry(QtCore.QRect(40, 70, 51, 181))
+        self.SpeedSlider.setMinimum(-100)
+        self.SpeedSlider.setMaximum(100)
+        self.SpeedSlider.setOrientation(QtCore.Qt.Vertical)
+        self.SpeedSlider.setObjectName("SpeedSlider")
+        self.SpeedSlider.valueChanged.connect(self.showValue)
+
+        self.Speed_meter = QtWidgets.QDial(Form)
+        self.Speed_meter.setGeometry(QtCore.QRect(190, 150, 111, 101))
+        self.Speed_meter.setObjectName("Speed_meter")
+
+        self.Speed_Label = QtWidgets.QLabel(Form)
+        self.Speed_Label.setGeometry(QtCore.QRect(180, 90, 131, 51))
+        self.Speed_Label.setScaledContents(False)
+        self.Speed_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Speed_Label.setObjectName("Speed_Label")
+
+        self.handle = QtWidgets.QDial(Form)
+        self.handle.setGeometry(QtCore.QRect(360, 100, 131, 111))
+        self.handle.setProperty("value", 0)
+        self.handle.setObjectName("handle")
 
         self.retranslateUi(Form)
-        self.verticalSlider.valueChanged.connect(self.showValue)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.pushButton.setText(_translate("Form", "Head Light"))
-        self.pushButton_2.setText(_translate("Form", "Tail Light"))
-        self.pushButton_3.setText(_translate("Form", "Left"))
-        self.pushButton_4.setText(_translate("Form", "Right"))
+        self.Headlamp_Button.setText(_translate("Form", "Headlamp"))
+        self.Taillamp_Button.setText(_translate("Form", "Taillamp"))
+        self.Speed_Label.setText(_translate("Form", "0"))
     
     def showValue(self):
-        self.a = abs(self.verticalSlider.value())
-        self.lcdNumber.display(self.a)
+        self.dir = ''
+        if self.SpeedSlider.value() > 0:
+            self.dir = 'D'
+        else:
+            self.dir = 'R'
+        self.speed = abs(self.SpeedSlider.value())
+        self.speed = str(self.speed)
+        self.Speed_Label.setText(self.dir+self.speed)
+
 
 if __name__ == "__main__":
     import sys
