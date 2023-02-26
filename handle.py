@@ -32,6 +32,7 @@ class Ui_Form(object):
         self.Speed_meter = QtWidgets.QDial(Form)
         self.Speed_meter.setGeometry(QtCore.QRect(190, 150, 111, 101))
         self.Speed_meter.setObjectName("Speed_meter")
+        self.Speed_meter.setMaximum(240)
 
         self.Speed_Label = QtWidgets.QLabel(Form)
         self.Speed_Label.setGeometry(QtCore.QRect(180, 90, 131, 51))
@@ -43,6 +44,7 @@ class Ui_Form(object):
         self.handle.setGeometry(QtCore.QRect(360, 100, 131, 111))
         self.handle.setProperty("value", 0)
         self.handle.setObjectName("handle")
+        self.handle.setValue(50)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -59,10 +61,8 @@ class Ui_Form(object):
 
     def showValue(self):
         self.dir = ''
-        if self.SpeedSlider.value() > 0:
+        if self.SpeedSlider.value() >= 0:
             self.dir = 'D'
-        elif self.SpeedSlider.value() == 0:
-            self.dir = ''
         else:
             self.dir = 'R'
         self.speed = abs(self.SpeedSlider.value())
