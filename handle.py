@@ -27,6 +27,7 @@ class Ui_Form(object):
         self.SpeedSlider.setOrientation(QtCore.Qt.Vertical)
         self.SpeedSlider.setObjectName("SpeedSlider")
         self.SpeedSlider.valueChanged.connect(self.showValue)
+        self.SpeedSlider.sliderReleased.connect(self.reset)
 
         self.Speed_meter = QtWidgets.QDial(Form)
         self.Speed_meter.setGeometry(QtCore.QRect(190, 150, 111, 101))
@@ -53,13 +54,19 @@ class Ui_Form(object):
         self.Taillamp_Button.setText(_translate("Form", "Taillamp"))
         self.Speed_Label.setText(_translate("Form", "0"))
     
+    def reset(self):
+        self.SpeedSlider.setValue(0)
+
     def showValue(self):
         self.dir = ''
         if self.SpeedSlider.value() > 0:
             self.dir = 'D'
+        elif self.SpeedSlider.value() == 0:
+            self.dir = ''
         else:
             self.dir = 'R'
         self.speed = abs(self.SpeedSlider.value())
+        self.Speed_meter.setValue(self.speed)
         self.speed = str(self.speed)
         self.Speed_Label.setText(self.dir+self.speed)
 
