@@ -6,46 +6,48 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+# 2/26 프론트 엔드 완성
+# 2/27 버튼 백엔드 완성
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import motor,led
 import RPi.GPIO as GPIO
 from time import sleep
 
 #인스턴스 생성(괄호안은 핀번호)
-front=motor.Motor(11,22,27)
-rear=motor.Motor(17,9,10)
-white=led.Led(4)
-red=led.Led(6)
+cornor=motor.Motor(11,22,27)
+headway=motor.Motor(17,9,10)
+headlamp=led.Led(4)
+taillamp=led.Led(6)
 
 # LED 리셋
-white.off()
-red.off()
+Headlamp_state = False
+Taillamp_state = False
+headlamp.off()
+taillamp.off()
 
 class Ui_Form(object):
-    def setupUi(self, Form, front, rear, white, red):
-        #인스턴스 생성(괄호안은 핀번호)
-        self.front = front
-        self.rear = rear
-        self.white = white
-        self.red = red
+    def setupUi(self, Form, Headlamp_state, Taillamp_state):
+        # 변수 불러오기
+        self.Headlamp_state = Headlamp_state
+        self.Taillamp_state = Taillamp_state
 
         # 창 생성
         Form.setObjectName("Form")
         Form.resize(522, 330)
         
         # headlamp 버튼
-        self.Headlamp_Button = QtWidgets.QPushButton(Form)
+        self.Headlamp_Button = QtWidgets.QPushButton(Form)                             # Headlamp 버튼 생성
         self.Headlamp_Button.setGeometry(QtCore.QRect(0, 0, 521, 61))
         self.Headlamp_Button.setObjectName("Headlamp_Button")
-        self.Headlamp = False
-        self.Headlamp_Button.clicked.connect(self.Headlamp_switch(self.Headlamp))      # Headlamp_Button을 눌렀을시 headlamp_LED 제어
+
+        self.Headlamp_Button.clicked.connect(self.Headlamp_switch(self.Headlamp_switch))      # Headlamp_Button을 눌렀을시 headlamp_LED 제어
 
         # taillamp 버튼
         self.Taillamp_Button = QtWidgets.QPushButton(Form)
         self.Taillamp_Button.setGeometry(QtCore.QRect(-10, 270, 531, 61))
         self.Taillamp_Button.setObjectName("Taillamp_Button")
-        self.Headlamp = False
-        self.Headlamp_Button.clicked.connect(self.Taillamp_switch(self.Taillamp))      # Taillamp_Button을 눌렀을시 taillamp_LED 제어
+        self.Headlamp_Button.clicked.connect(self.Taillamp_switch(self.Taillamp_switch))      # Taillamp_Button을 눌렀을시 taillamp_LED 제어
         
         # 앞 뒤 조종 슬라이더
         self.SpeedSlider = QtWidgets.QSlider(Form)
@@ -76,7 +78,7 @@ class Ui_Form(object):
         self.handle.setProperty("value", 0)
         self.handle.setObjectName("handle")
         self.handle.setValue(50)
-        self.handle.valueChanged.connect(self.corner_move)
+        self.handle.valueChanged.connect(self.cornor_move)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -92,15 +94,15 @@ class Ui_Form(object):
     # 앞 뒤 조종 슬라이더를 놓았을 때 값과 속도값을 0으로 정한다
     def front_move_stop(self):
         self.SpeedSlider.setValue(0)
-        self.rear.motor(self.SpeedSlider.value())
+        headway.motor(self.SpeedSlider.value())
 
     # 자동차 앞 뒤 조종
     def front_move(self):
-        self.rear.motor(self.SpeedSlider.value())
+        headway.motor(self.SpeedSlider.value())
 
     # 자동차 조향 조종
     def cornor_move(self):
-        self.front.motor(self.handle.value())
+        cornor.motor(self.handle.value())
 
     # 앞 뒤 조종 슬라이더를 움직일때 호출 되는 함수
     def showValue(self):
@@ -118,26 +120,26 @@ class Ui_Form(object):
         self.Speed_Label.setText(self.dir+self.speed)
     
     # headlamp 스위치 함수
-    def Headlamp_switch(self, Head_boolean):
+    def Headlamp_switch(self, Headlamp_state):
         # healamp가 켜져있으면 끄고,
-        if Head_boolean == True:
-            white.off()
-            self.Headlamp = False
+        if Headlamp_state == True:
+            headlamp.off()
+            self.Headlamp_state = False
         # taillamp가 꺼져있으면 켜진다
         else:
-            white.on()
-            self.Headlamp = True
+            headlamp.on()
+            self.Headlamp_state = True
     
     # taillamp 스위치 함수
-    def Taillamp_switch(self, Tail_boolean):
+    def Taillamp_switch(self, Taillamp_state):
         # taillamp가 켜져있으면 끄고,
-        if Tail_boolean == True:
-            red.off()
-            self.Taillamp = False
+        if Taillamp_state == True:
+            taillamp.off()
+            self.Taillamp_state = False
         # taillamp가 꺼져있으면 켜진다
         else:
-            red.on()
-            self.Headlamp = True
+            taillamp.on()
+            self.Taillamp_state = True
 
 if __name__ == "__main__":
     import sys
