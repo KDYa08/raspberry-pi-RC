@@ -37,48 +37,51 @@ class Ui_Form(object):
         Form.resize(522, 330)
         
         # headlamp 버튼
-        self.Headlamp_Button = QtWidgets.QPushButton(Form)                             # Headlamp 버튼 생성
+        self.Headlamp_Button = QtWidgets.QPushButton(Form)                                    # Headlamp 버튼 생성(전조등 버튼)
         self.Headlamp_Button.setGeometry(QtCore.QRect(0, 0, 521, 61))
         self.Headlamp_Button.setObjectName("Headlamp_Button")
 
         self.Headlamp_Button.clicked.connect(self.Headlamp_switch(self.Headlamp_switch))      # Headlamp_Button을 눌렀을시 headlamp_LED 제어
 
         # taillamp 버튼
-        self.Taillamp_Button = QtWidgets.QPushButton(Form)
+        self.Taillamp_Button = QtWidgets.QPushButton(Form)                                    # Taillamp 버튼 생성(후미등 버튼)
         self.Taillamp_Button.setGeometry(QtCore.QRect(-10, 270, 531, 61))
         self.Taillamp_Button.setObjectName("Taillamp_Button")
+
         self.Headlamp_Button.clicked.connect(self.Taillamp_switch(self.Taillamp_switch))      # Taillamp_Button을 눌렀을시 taillamp_LED 제어
         
         # 앞 뒤 조종 슬라이더
-        self.SpeedSlider = QtWidgets.QSlider(Form)
-        self.SpeedSlider.setGeometry(QtCore.QRect(40, 70, 51, 181))
-        self.SpeedSlider.setMinimum(-100)
-        self.SpeedSlider.setMaximum(100)
-        self.SpeedSlider.setOrientation(QtCore.Qt.Vertical)
-        self.SpeedSlider.setObjectName("SpeedSlider")
-        self.SpeedSlider.valueChanged.connect(self.showValue,self.front_move)
-        self.SpeedSlider.sliderReleased.connect(self.front_move_stop)
+        self.Speed_Slider = QtWidgets.QSlider(Form)                                           # Speed_Slider 슬라이더 생성(앞 뒤 조종)
+        self.Speed_Slider.setGeometry(QtCore.QRect(40, 70, 51, 181))
+        self.Speed_Slider.setMinimum(-100)                                                    # 슬라이더 값 범위를 -100~100으로 지정
+        self.Speed_Slider.setMaximum(100)
+        self.Speed_Slider.setOrientation(QtCore.Qt.Vertical)                                  # 슬라이더 방향을 세로로 지정
+        self.Speed_Slider.setObjectName("Speed_Slider")
+
+        self.Speed_Slider.valueChanged.connect(self.showValue,self.front_move)                # 슬라이더 값이 바뀌면 함수 showValue,front_move를 호출
+        self.Speed_Slider.sliderReleased.connect(self.front_move_stop)                        # 슬라이더를 놓으면 함수 front_move_stop를 호출 
 
         # 속도계 다이얼
-        self.Speed_meter = QtWidgets.QDial(Form)
+        self.Speed_meter = QtWidgets.QDial(Form)                                              # Speed_meter 다이얼 생성(속도계)
         self.Speed_meter.setGeometry(QtCore.QRect(190, 150, 111, 101))
         self.Speed_meter.setObjectName("Speed_meter")
         self.Speed_meter.setMaximum(240)
 
         # 속도계 숫자
-        self.Speed_Label = QtWidgets.QLabel(Form)
+        self.Speed_Label = QtWidgets.QLabel(Form)                                             # Speed_Label 생성(속도계 숫자)
         self.Speed_Label.setGeometry(QtCore.QRect(180, 90, 131, 51))
         self.Speed_Label.setScaledContents(False)
         self.Speed_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.Speed_Label.setObjectName("Speed_Label")
 
         # 핸들 다이얼
-        self.handle = QtWidgets.QDial(Form)
+        self.handle = QtWidgets.QDial(Form)                                                   # handle 다이얼 생성(핸들)
         self.handle.setGeometry(QtCore.QRect(360, 100, 131, 111))
         self.handle.setProperty("value", 0)
         self.handle.setObjectName("handle")
-        self.handle.setValue(50)
-        self.handle.valueChanged.connect(self.cornor_move)
+
+        self.handle.setValue(50)                                                              # handle 값을 중앙으로 설정
+        self.handle.valueChanged.connect(self.cornor_move)                                    # handle 값이 바뀌면 함수 cornor_move를 호출
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -87,34 +90,34 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.Headlamp_Button.setText(_translate("Form", "Headlamp"))
-        self.Taillamp_Button.setText(_translate("Form", "Taillamp"))
-        self.Speed_Label.setText(_translate("Form", "0"))
+        self.Headlamp_Button.setText(_translate("Form", "Headlamp"))                          # headlamp 버튼 텍스트를 "Headlamp"로 지정
+        self.Taillamp_Button.setText(_translate("Form", "Taillamp"))                          # taillamp 버튼 텍스트를 "Taillamp"로 지정
+        self.Speed_Label.setText(_translate("Form", "0"))                                     # Speed_Label 라벨 텍스트를 "0"으로 지정
     
-    # 앞 뒤 조종 슬라이더를 놓았을 때 값과 속도값을 0으로 정한다
+    # 정지
     def front_move_stop(self):
-        self.SpeedSlider.setValue(0)
-        headway.motor(self.SpeedSlider.value())
+        self.Speed_Slider.setValue(0)                                                         # Speed_Slider값을 0으로 정한다
+        headway.motor(self.Speed_Slider.value())                                              # headway 모터 속도를 Speed_Slider값(0)으로 정한다
 
-    # 자동차 앞 뒤 조종
+    # 전진or후진
     def front_move(self):
-        headway.motor(self.SpeedSlider.value())
+        headway.motor(self.Speed_Slider.value())                                              # headway 모터 속도를 Speed_Slider값(-100 ~ 100)으로 정한다
 
-    # 자동차 조향 조종
+    # 좌or우회전
     def cornor_move(self):
-        cornor.motor(self.handle.value())
+        cornor.motor(self.handle.value())                                                     # cornor 모터를 handle값(0 ~ 100)으로 정한다
 
     # 앞 뒤 조종 슬라이더를 움직일때 호출 되는 함수
     def showValue(self):
         # 슬라이더 값이 +이면 D, -면 R을 띄우고
         self.dir = ''
-        if self.SpeedSlider.value() >= 0:
+        if self.Speed_Slider.value() >= 0:
             self.dir = 'D'
         else:
             self.dir = 'R'
         
         # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다 ex) D50, R50
-        self.speed = abs(self.SpeedSlider.value())
+        self.speed = abs(self.Speed_Slider.value())
         self.Speed_meter.setValue(self.speed)
         self.speed = str(self.speed)
         self.Speed_Label.setText(self.dir+self.speed)
@@ -125,6 +128,7 @@ class Ui_Form(object):
         if Headlamp_state == True:
             headlamp.off()
             self.Headlamp_state = False
+
         # taillamp가 꺼져있으면 켜진다
         else:
             headlamp.on()
@@ -136,6 +140,7 @@ class Ui_Form(object):
         if Taillamp_state == True:
             taillamp.off()
             self.Taillamp_state = False
+
         # taillamp가 꺼져있으면 켜진다
         else:
             taillamp.on()
