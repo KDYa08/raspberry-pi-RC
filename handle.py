@@ -116,11 +116,11 @@ class Ui_Form(object):
         else:
             self.dir = 'R'
         
-        # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다 ex) D50, R50
-        self.speed = abs(self.Speed_Slider.value())
-        self.Speed_meter.setValue(self.speed)
-        self.speed = str(self.speed)
-        self.Speed_Label.setText(self.dir+self.speed)
+        # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다
+        self.speed = abs(self.Speed_Slider.value())                                            # Speed_Slider값을 절댓값으로 바꿔 speed에 저장
+        self.Speed_meter.setValue(self.speed)                                                  # Speed_metrer값을 speed값으로 지정
+        self.speed = str(self.speed)                                                           # speed값을 str로 저장
+        self.Speed_Label.setText(self.dir+self.speed)                                          # Speed_Label값을 dir+speed값으로 지정 ex) D50, R50
     
     # headlamp 스위치 함수
     def Headlamp_switch(self, Headlamp_state):
