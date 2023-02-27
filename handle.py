@@ -22,7 +22,13 @@ white.off()
 red.off()
 
 class Ui_Form(object):
-    def setupUi(self, Form):
+    def setupUi(self, Form, front, rear, white, red):
+        #인스턴스 생성(괄호안은 핀번호)
+        self.front = front
+        self.rear = rear
+        self.white = white
+        self.red = red
+
         # 창 생성
         Form.setObjectName("Form")
         Form.resize(522, 330)
@@ -48,8 +54,8 @@ class Ui_Form(object):
         self.SpeedSlider.setMaximum(100)
         self.SpeedSlider.setOrientation(QtCore.Qt.Vertical)
         self.SpeedSlider.setObjectName("SpeedSlider")
-        self.SpeedSlider.valueChanged.connect(self.showValue)
-        self.SpeedSlider.sliderReleased.connect(self.reset)
+        self.SpeedSlider.valueChanged.connect(self.showValue,self.front_move)
+        self.SpeedSlider.sliderReleased.connect(self.front_move_stop)
 
         # 속도계 다이얼
         self.Speed_meter = QtWidgets.QDial(Form)
@@ -70,6 +76,7 @@ class Ui_Form(object):
         self.handle.setProperty("value", 0)
         self.handle.setObjectName("handle")
         self.handle.setValue(50)
+        self.handle.valueChanged.connect(self.corner_move)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -82,9 +89,18 @@ class Ui_Form(object):
         self.Taillamp_Button.setText(_translate("Form", "Taillamp"))
         self.Speed_Label.setText(_translate("Form", "0"))
     
-    # 앞 뒤 조종 슬라이더를 놓았을 때 값을 0으로 만드는 함수
-    def reset(self):
+    # 앞 뒤 조종 슬라이더를 놓았을 때 값과 속도값을 0으로 정한다
+    def front_move_stop(self):
         self.SpeedSlider.setValue(0)
+        self.rear.motor(self.SpeedSlider.value())
+
+    # 자동차 앞 뒤 조종
+    def front_move(self):
+        self.rear.motor(self.SpeedSlider.value())
+
+    # 자동차 조향 조종
+    def cornor_move(self):
+        self.front.motor(self.handle.value())
 
     # 앞 뒤 조종 슬라이더를 움직일때 호출 되는 함수
     def showValue(self):
@@ -95,7 +111,7 @@ class Ui_Form(object):
         else:
             self.dir = 'R'
         
-        # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다 ex)D50, R50
+        # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다 ex) D50, R50
         self.speed = abs(self.SpeedSlider.value())
         self.Speed_meter.setValue(self.speed)
         self.speed = str(self.speed)
@@ -123,7 +139,6 @@ class Ui_Form(object):
             red.on()
             self.Headlamp = True
 
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -132,4 +147,9 @@ if __name__ == "__main__":
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())
+    front.end()
+    rear.end()
+    white.end()
+    red.end()
+    GPIO.cleanup()
 
