@@ -12,7 +12,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import motor,led
 import RPi.GPIO as GPIO
-from time import sleep
 
 #인스턴스 생성(괄호안은 핀번호)
 cornor=motor.Motor(11,22,27)
@@ -85,6 +84,39 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+    
+    # 키보드로 조종하는 함수
+    def KeyPressEvent(self, e):
+        # 속도 조절 커맨드(10씩 컨트롤)
+        if e.key() == QtCore.key_Ctrl:
+            self.Speed_Slider.setValue(self.Speed_Slider.value() + 10)
+            self.showValue()
+        elif e.key() == QtCore.key_Alt:
+            self.Speed_Slider.setValue(self.Speed_Slider.value() - 10)
+            self.showValue()
+        
+        # 앞 뒤 조종 커맨드
+        if e.key() == QtCore.key_W:
+            self.front_move()
+        elif e.key() == QtCore.key_S:
+            self.front_move()
+        
+        # 좌 우 조종 커맨드
+        if e.key() == QtCore.key_A:
+            self.handle.setValue(0)
+            self.cornor_move()
+        elif e.key() == QtCore.key_D:
+            self.handle.setValue(100)
+            self.cornor_move()
+
+        # LED 조종 컨트롤
+        if e.key() == QtCore.key_Q:
+            self.Headlamp_switch
+
+        elif e.key() == QtCore.key_E:
+            self.Taillamp_switch()
+        else:
+            self.front_move_stop()
 
     # UI 생성 함수
     def retranslateUi(self, Form):
@@ -93,7 +125,64 @@ class Ui_Form(object):
         self.Headlamp_Button.setText(_translate("Form", "Headlamp"))                          # headlamp 버튼 텍스트를 "Headlamp"로 지정
         self.Taillamp_Button.setText(_translate("Form", "Taillamp"))                          # taillamp 버튼 텍스트를 "Taillamp"로 지정
         self.Speed_Label.setText(_translate("Form", "0"))                                     # Speed_Label 라벨 텍스트를 "0"으로 지정
+
+# 키보드 조종시 사용
+
+    # 정지
+    def front_move_stop(self):
+        self.Speed_Slider.setValue(0)                                                         # Speed_Slider값을 0으로 정한다
+        headway.motor(self.Speed_Slider.value())                                              # headway 모터 속도를 Speed_Slider값(0)으로 정한다
+
+    # 전진or후진
+    def front_move(self):
+        headway.motor(self.Speed_Slider.value())                                              # headway 모터 속도를 Speed_Slider값(-100 ~ 100)으로 정한다
+
+    # 좌or우회전
+    def cornor_move(self):
+        cornor.motor(self.handle.value())                                                     # cornor 모터를 handle값(0 ~ 100)으로 정한다
+
+    # 앞 뒤 조종 슬라이더를 움직일때 호출 되는 함수
+    def showValue(self):
+        # 슬라이더 값이 +이면 D, -면 R을 띄우고
+        self.dir = ''
+        if self.Speed_Slider.value() >= 0:
+            self.dir = 'D'
+        else:
+            self.dir = 'R'
+        
+        # 슬라이더값을 절댓값으로 바꿔 속도계 다이얼에 적용한다
+        self.speed = abs(self.Speed_Slider.value())                                            # Speed_Slider값을 절댓값으로 바꿔 speed에 저장
+        self.Speed_meter.setValue(self.speed)                                                  # Speed_metrer값을 speed값으로 지정
+        self.speed = str(self.speed)                                                           # speed값을 str로 저장
+        self.Speed_Label.setText(self.dir+self.speed)                                          # Speed_Label값을 dir+speed값으로 지정 ex) D50, R50
     
+    # headlamp 스위치 함수
+    def Headlamp_switch(self, Headlamp_state):
+        # healamp가 켜져있으면 끄고,
+        if Headlamp_state == True:
+            headlamp.off()
+            self.Headlamp_state = False
+
+        # taillamp가 꺼져있으면 켜진다
+        else:
+            headlamp.on()
+            self.Headlamp_state = True
+    
+    # taillamp 스위치 함수
+    def Taillamp_switch(self, Taillamp_state):
+        # taillamp가 켜져있으면 끄고,
+        if Taillamp_state == True:
+            taillamp.off()
+            self.Taillamp_state = False
+
+        # taillamp가 꺼져있으면 켜진다
+        else:
+            taillamp.on()
+            self.Taillamp_state = True
+
+############################
+# UI 조종시 사용
+
     # 정지
     def front_move_stop(self):
         self.Speed_Slider.setValue(0)                                                         # Speed_Slider값을 0으로 정한다
