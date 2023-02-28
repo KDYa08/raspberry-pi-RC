@@ -8,6 +8,7 @@
 
 # 2/26 프론트 엔드 완성
 # 2/27 버튼 백엔드 완성
+# 2/28 키보드 백엔드 완성
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import motor,led
