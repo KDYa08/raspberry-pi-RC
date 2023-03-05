@@ -14,23 +14,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import motor,led
 import RPi.GPIO as GPIO
 
-#인스턴스 생성(괄호안은 핀번호)
-cornor=motor.Motor(11,22,27)
-headway=motor.Motor(17,9,10)
-headlamp=led.Led(4)
-taillamp=led.Led(6)
-
-# LED 리셋
-Headlamp_state = False
-Taillamp_state = False
-headlamp.off()
-taillamp.off()
-
 class Ui_Form(object):
-    def setupUi(self, Form, Headlamp_state, Taillamp_state):
+    def setupUi(self, Form):
         # 변수 불러오기
-        self.Headlamp_state = Headlamp_state
-        self.Taillamp_state = Taillamp_state
+        self.Headlamp_state = False
+        self.Taillamp_state = False
 
         # 창 생성
         Form.setObjectName("Form")
@@ -41,14 +29,14 @@ class Ui_Form(object):
         self.Headlamp_Button.setGeometry(QtCore.QRect(0, 0, 521, 61))
         self.Headlamp_Button.setObjectName("Headlamp_Button")
 
-        self.Headlamp_Button.clicked.connect(self.Headlamp_switch(self.Headlamp_switch))      # Headlamp_Button을 눌렀을시 headlamp_LED 제어
+        self.Headlamp_Button.clicked.connect(self.Headlamp_switch)                            # Headlamp_Button을 눌렀을시 headlamp_LED 제어
 
         # taillamp 버튼
         self.Taillamp_Button = QtWidgets.QPushButton(Form)                                    # Taillamp 버튼 생성(후미등 버튼)
         self.Taillamp_Button.setGeometry(QtCore.QRect(-10, 270, 531, 61))
         self.Taillamp_Button.setObjectName("Taillamp_Button")
 
-        self.Headlamp_Button.clicked.connect(self.Taillamp_switch(self.Taillamp_switch))      # Taillamp_Button을 눌렀을시 taillamp_LED 제어
+        self.Headlamp_Button.clicked.connect(self.Taillamp_switch)                            # Taillamp_Button을 눌렀을시 taillamp_LED 제어
         
         # 앞 뒤 조종 슬라이더
         self.Speed_Slider = QtWidgets.QSlider(Form)                                           # Speed_Slider 슬라이더 생성(앞 뒤 조종)
@@ -58,7 +46,8 @@ class Ui_Form(object):
         self.Speed_Slider.setOrientation(QtCore.Qt.Vertical)                                  # 슬라이더 방향을 세로로 지정
         self.Speed_Slider.setObjectName("Speed_Slider")
 
-        self.Speed_Slider.valueChanged.connect(self.showValue,self.front_move)                # 슬라이더 값이 바뀌면 함수 showValue,front_move를 호출
+        self.Speed_Slider.valueChanged.connect(self.showValue)                                # 슬라이더 값이 바뀌면 함수 showValue,front_move를 호출
+        self.Speed_Slider.valueChanged.connect(self.front_move)
         self.Speed_Slider.sliderReleased.connect(self.front_move_stop)                        # 슬라이더를 놓으면 함수 front_move_stop를 호출 
 
         # 속도계 다이얼
@@ -156,9 +145,9 @@ class Ui_Form(object):
         self.Speed_Label.setText(self.dir+self.speed)                                          # Speed_Label값을 dir+speed값으로 지정 ex) D50, R50
     
     # headlamp 스위치 함수
-    def Headlamp_switch(self, Headlamp_state):
-        # healamp가 켜져있으면 끄고,
-        if Headlamp_state == True:
+    def Headlamp_switch(self):
+        # headlamp가 켜져있으면 끄고,
+        if self.Headlamp_state == True:
             headlamp.off()
             self.Headlamp_state = False
 
@@ -168,9 +157,9 @@ class Ui_Form(object):
             self.Headlamp_state = True
     
     # taillamp 스위치 함수
-    def Taillamp_switch(self, Taillamp_state):
+    def Taillamp_switch(self):
         # taillamp가 켜져있으면 끄고,
-        if Taillamp_state == True:
+        if self.Taillamp_state == True:
             taillamp.off()
             self.Taillamp_state = False
 
@@ -181,6 +170,16 @@ class Ui_Form(object):
 
 if __name__ == "__main__":
     import sys
+    #인스턴스 생성(괄호안은 핀번호)
+    cornor=motor.Motor(11,22,27)
+    headway=motor.Motor(17,9,10)
+    headlamp=led.Led(4)
+    taillamp=led.Led(6)
+
+    # LED 리셋
+    headlamp.off()
+    taillamp.off()
+
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
