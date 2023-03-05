@@ -31,12 +31,12 @@ class Ui_Form(object):
 
         self.Headlamp_Button.clicked.connect(self.Headlamp_switch)                            # Headlamp_Button을 눌렀을시 headlamp_LED 제어
 
-        # taillamp 버튼
+        # Taillamp 버튼
         self.Taillamp_Button = QtWidgets.QPushButton(Form)                                    # Taillamp 버튼 생성(후미등 버튼)
         self.Taillamp_Button.setGeometry(QtCore.QRect(-10, 270, 531, 61))
         self.Taillamp_Button.setObjectName("Taillamp_Button")
 
-        self.Headlamp_Button.clicked.connect(self.Taillamp_switch)                            # Taillamp_Button을 눌렀을시 taillamp_LED 제어
+        self.Taillamp_Button.clicked.connect(self.Taillamp_switch)                            # Taillamp_Button을 눌렀을시 taillamp_LED 제어
         
         # 앞 뒤 조종 슬라이더
         self.Speed_Slider = QtWidgets.QSlider(Form)                                           # Speed_Slider 슬라이더 생성(앞 뒤 조종)
@@ -101,7 +101,7 @@ class Ui_Form(object):
 
         # LED 조종 컨트롤
         if e.key() == QtCore.key_Q:
-            self.Headlamp_switch
+            self.Headlamp_switch()
 
         elif e.key() == QtCore.key_E:
             self.Taillamp_switch()
@@ -151,7 +151,7 @@ class Ui_Form(object):
             headlamp.off()
             self.Headlamp_state = False
 
-        # taillamp가 꺼져있으면 켜진다
+        # Headlamp가 꺼져있으면 켜진다
         else:
             headlamp.on()
             self.Headlamp_state = True
@@ -186,9 +186,5 @@ if __name__ == "__main__":
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())
-    front.end()
-    rear.end()
-    white.end()
-    red.end()
     GPIO.cleanup()
 
