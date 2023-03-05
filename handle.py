@@ -66,10 +66,12 @@ class Ui_Form(object):
         # 핸들 다이얼
         self.handle = QtWidgets.QDial(Form)                                                   # handle 다이얼 생성(핸들)
         self.handle.setGeometry(QtCore.QRect(360, 100, 131, 111))
+        self.handle.setMinimum(-100)
+        self.handle.setMaximum(100)
         self.handle.setProperty("value", 0)
         self.handle.setObjectName("handle")
 
-        self.handle.setValue(50)                                                              # handle 값을 중앙으로 설정
+        self.handle.setValue(0)                                                              # handle 값을 중앙으로 설정
         self.handle.valueChanged.connect(self.cornor_move)                                    # handle 값이 바뀌면 함수 cornor_move를 호출
 
         self.retranslateUi(Form)
@@ -127,7 +129,10 @@ class Ui_Form(object):
 
     # 좌or우회전
     def cornor_move(self):
-        cornor.motor(self.handle.value())                                                     # cornor 모터를 handle값(0 ~ 100)으로 정한다
+        if self.handle.value() == 30 or self.handle.value()== -30:                             # cornor 모터를 handle값(0 ~ 100)으로 정한다
+            cornor.motor(0)
+        else:
+            cornor.motor(self.handle.value())  
 
     # 앞 뒤 조종 슬라이더를 움직일때 호출 되는 함수
     def showValue(self):
