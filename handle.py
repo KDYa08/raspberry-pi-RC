@@ -11,6 +11,7 @@
 # 2/28 키보드 백엔드 완성
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 import motor,led
 import RPi.GPIO as GPIO
 
@@ -80,10 +81,14 @@ class Ui_Form(object):
     # 키보드로 조종하는 함수
     def KeyPressEvent(self, e):
         # 속도 조절 커맨드(10씩 컨트롤)
-        if e.key() == QtCore.key_Ctrl:
+        if e.key() == Qt.key_Ctrl:
             self.Speed_Slider.setValue(self.Speed_Slider.value() + 10)
             self.showValue()
+<<<<<<< HEAD
             print('ctrl')
+=======
+
+>>>>>>> 7ddd4cf267a65223e4e277bcb126c507aed026d1
         elif e.key() == QtCore.key_Alt:
             self.Speed_Slider.setValue(self.Speed_Slider.value() - 10)
             self.showValue()
@@ -108,6 +113,7 @@ class Ui_Form(object):
 
         elif e.key() == QtCore.key_E:
             self.Taillamp_switch()
+        
         else:
             self.front_move_stop()
 
