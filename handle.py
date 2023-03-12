@@ -83,6 +83,7 @@ class Ui_Form(object):
         if e.key() == QtCore.key_Ctrl:
             self.Speed_Slider.setValue(self.Speed_Slider.value() + 10)
             self.showValue()
+            print('ctrl')
         elif e.key() == QtCore.key_Alt:
             self.Speed_Slider.setValue(self.Speed_Slider.value() - 10)
             self.showValue()
