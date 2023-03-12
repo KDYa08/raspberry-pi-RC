@@ -79,34 +79,34 @@ class Ui_Form(object):
     
     # 키보드로 조종하는 함수
     def KeyPressEvent(self, e):
+        print(e.key())
         # 속도 조절 커맨드(10씩 컨트롤)
-        if e.key() == Qt.key_Ctrl:
+        if e.key() == QtCore.Key_Ctrl:
             self.Speed_Slider.setValue(self.Speed_Slider.value() + 10)
             self.showValue()
-
-        elif e.key() == QtCore.key_Alt:
+        elif e.key() == QtCore.Key_Alt:
             self.Speed_Slider.setValue(self.Speed_Slider.value() - 10)
             self.showValue()
         
         # 앞 뒤 조종 커맨드
-        if e.key() == QtCore.key_W:
+        if e.key() == QtCore.Key_W:
             self.front_move()
-        elif e.key() == QtCore.key_S:
+        elif e.key() == QtCore.Key_S:
             self.front_move()
         
         # 좌 우 조종 커맨드
-        if e.key() == QtCore.key_A:
+        if e.key() == QtCore.Key_A:
             self.handle.setValue(0)
             self.cornor_move()
-        elif e.key() == QtCore.key_D:
+        elif e.key() == QtCore.Key_D:
             self.handle.setValue(100)
             self.cornor_move()
 
         # LED 조종 컨트롤
-        if e.key() == QtCore.key_Q:
+        if e.key() == QtCore.Key_Q:
             self.Headlamp_switch()
 
-        elif e.key() == QtCore.key_E:
+        elif e.key() == QtCore.Key_E:
             self.Taillamp_switch()
         
         else:
