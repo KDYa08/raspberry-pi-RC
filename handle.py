@@ -11,7 +11,6 @@
 # 2/28 키보드 백엔드 완성
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
 import motor,led
 import RPi.GPIO as GPIO
 
@@ -175,6 +174,13 @@ class Ui_Form(object):
         else:
             taillamp.on()
             self.Taillamp_state = True
+        
+    def closeEvent(self, evnet):
+        headway.end()
+        cornor.end()
+        headlamp.end()
+        taillamp.end()
+        QtCore.instance().quit
 
 if __name__ == "__main__":
     import sys
