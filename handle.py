@@ -175,7 +175,7 @@ class Ui_Form(object):
             taillamp.on()
             self.Taillamp_state = True
         
-    def closeEvent(self, evnet):
+    def closeEvent(self):
         headway.end()
         cornor.end()
         headlamp.end()
